@@ -50,8 +50,10 @@
   - [7.1. Criando Arrays](#71-criando-arrays)
   - [7.2. Acessando Elementos](#72-acessando-elementos)
   - [7.3. Métodos Comuns](#73-métodos-comuns)
-- [POO - Progração Orientada Objeto](#poo---progração-orientada-objeto)
-  - [Objeto](#objeto)
+- [8. POO - Programação Orientada Objeto](#8-poo---programação-orientada-objeto)
+  - [8.1. Objeto](#81-objeto)
+  - [8.2. Herança](#82-herança)
+  - [JSON](#json)
 
 # 1. Declaração de Variáveis em JavaScript
 
@@ -1138,9 +1140,9 @@
     numeros.sort();
     console.log(numeros); // [1, 3, 5, 8]
     ```
-# POO - Progração Orientada Objeto
+# 8. POO - Programação Orientada Objeto
 
-## Objeto
+## 8.1. Objeto
 
 -  São estruturas fundamentais que permitem armazenar e manipular dados de forma organizada.  
 -  São coleções de pares chave-valor, onde cada valor pode ser um dado primitivo, outro objeto ou até mesmo uma função.
@@ -1244,3 +1246,148 @@
   - **Desvantagens:**
 
     - Para objetos muito simples, pode ser exagerado.
+
+## 8.2. Herança
+
+- É um dos quatro pilares da Programação Orientada a Objetos (POO), juntamente com Abstração, Encapsulamento e Polimorfismo.
+
+- Permite que uma classe (classe filha) herde propriedades e métodos de outra classe (classe pai), promovendo o reuso de código e facilitando a manutenção.
+
+- **Exemplo de Uso**
+
+  - Usando **Classes** e **extends**
+  
+    ```javascript
+    // Classe pai
+    class Animal {
+        constructor(nome) {
+            this.nome = nome;
+        }
+
+        fazerSom() {
+            console.log(`${this.nome} está fazendo um som.`);
+        }
+    }
+
+    // Classe filha
+    class Cachorro extends Animal {
+        fazerSom() {
+            console.log(`${this.nome} está latindo!`);
+        }
+    }
+
+    // Uso
+    const cachorro = new Cachorro('Rex');
+    cachorro.fazerSom(); // Saída: Rex está latindo!
+    ```
+- **Vantagens:**
+
+  - Reuso de Código: Permite utilizar métodos e propriedades da classe pai sem reescrevê-los.
+
+  - Facilita a Manutenção: Alterações na classe pai refletem automaticamente nas classes filhas.
+
+  - Organização: Promove uma estrutura mais clara e lógica do código.
+
+
+
+- **Desvantagens:**
+
+  - **Baixo Acoplamento:** Prefira composição ao invés de herança se as classes não tiverem uma relação clara de "é um" (ex.: um Cachorro "é um" Animal).
+
+  - **Flexibilidade:** A herança cria uma relação rígida entre as classes, o que pode dificultar mudanças futuras.
+  
+## JSON
+
+- *JSON** (*JavaScript Object Notation*) é um formato leve para troca de dados, fácil de ler e escrever tanto para humanos quanto para máquinas. 
+- É amplamente utilizado para o envio e recebimento de informações em aplicações web, especialmente em APIs.
+
+-  **Exemplo de JSON:**
+  
+    ```json
+    {
+      "id": 1,
+      "nome": "Pneu 175/70 R14",
+      "preco": 250.00,
+      "estoque": true
+    }
+    ``` 
+- **Conversão de Objeto para `JSON`**
+  
+  - Para converter um objeto JavaScript em uma string `JSON`, utilizamos o método `JSON.stringify()`.
+
+  -  **Exemplo de JSON:**
+    
+      ```json
+      const produto = {
+          id: 1,
+          nome: "Pneu 175/70 R14",
+          preco: 250.00,
+          estoque: true
+      };
+
+      const produtoJSON = JSON.stringify(produto);
+      console.log(produtoJSON);
+      // Saída: {"id":1,"nome":"Pneu 175/70 R14","preco":250,"estoque":true}
+
+      ``` 
+  - **Dicas**
+  
+    - **Espaçamento na formatação**
+  
+      ```javascript
+      JSON.stringify(produto, null, 2);
+      ```
+      - O terceiro parâmetro define o espaçamento, deixando o JSON mais legível.
+  
+    - **Filtrar propriedades**
+  
+      ```javascript
+      JSON.stringify(produto, ['id', 'nome']);
+      ```
+      - Permite selecionar apenas as propriedades desejadas.
+
+- **Conversão de `JSON` para Objeto**
+  
+  - Para converter uma string `JSON` em um objeto JavaScript, usamos o método `JSON.parse()`.
+  
+  -  **Exemplo de JSON:**
+        
+        ```json
+        const jsonText = '{"id":2,"nome":"Óleo Lubrificante","preco":50.00,"estoque":false}';
+
+        const produtoObjeto = JSON.parse(jsonText);
+        console.log(produtoObjeto);
+        // Saída: { id: 2, nome: 'Óleo Lubrificante', preco: 50, estoque: false }
+
+        console.log(`O produto ${produtoObjeto.nome} custa R$${produtoObjeto.preco}`);
+        // Saída: O produto Óleo Lubrificante custa R$50
+        ``` 
+  - **Cuidados**
+  
+    - Certifique-se de que o `JSON` seja válido.
+  `Strings JSON` devem usar aspas duplas `(")`, tanto nas chaves quanto nos valores de texto.
+
+    - Tratamento de erros
+      ```json
+      try {
+
+        const data = JSON.parse('{"nome": "Produto"}');
+        console.log(data);
+
+      } catch (e) {
+
+        console.error("JSON inválido!", e);
+      }
+        
+      ```
+
+- **Comparando `JSON.stringify()` e `JSON.parse()`**
+
+| Método            | Função                                                | Exemplo                                     |
+|-------------------|-------------------------------------------------------|--------------------------------------------|
+| **`JSON.stringify()`** | Converte objeto para string JSON                       | `JSON.stringify({nome: "Produto"})`         |
+| **`JSON.parse()`**     | Converte string JSON para objeto JavaScript            | `JSON.parse('{"nome": "Produto"}')`         |
+
+
+
+
