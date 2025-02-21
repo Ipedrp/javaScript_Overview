@@ -15,6 +15,7 @@
   - [2.8. Operadores de String](#28-operadores-de-string)
   - [2.9. Operadores de Tipo](#29-operadores-de-tipo)
   - [2.10. Operador Spread (`...`) e Rest (`...`)](#210-operador-spread--e-rest-)
+  - [2.11. Operador `This`](#211-operador-this)
 - [3. Estruturas Condicionais](#3-estruturas-condicionais)
   - [3.1. `if`](#31-if)
   - [3.2. `else if`](#32-else-if)
@@ -49,6 +50,8 @@
   - [7.1. Criando Arrays](#71-criando-arrays)
   - [7.2. Acessando Elementos](#72-acessando-elementos)
   - [7.3. Métodos Comuns](#73-métodos-comuns)
+- [POO - Progração Orientada Objeto](#poo---progração-orientada-objeto)
+  - [Objeto](#objeto)
 
 # 1. Declaração de Variáveis em JavaScript
 
@@ -280,6 +283,65 @@
     console.log(nome); // "Maria"
     console.log(resto); // { idade: 25, cidade: "Rio de Janeiro" }
     ```
+## 2.11. Operador `This`
+
+- É uma palavra-chave especial que faz referência ao contexto de execução atual. 
+- O valor de `this` varia dependendo de onde e como ele é utilizado, o que pode gerar confusão, especialmente para iniciantes.
+
+- Regra do `This`
+  - Contexto global
+  
+    - No contexto global ou em funções simples, `this` referencia o objeto global:
+  
+    - Exemplo de uso: 
+      ```javascript
+        console.log(this); // No navegador, retorna o objeto `window` 
+      ```
+  - Dentro de um Objeto
+  
+    - Quando `this` é usado dentro de um método de um objeto, ele referencia o próprio objeto:
+  
+    - Exemplo de uso: 
+      ```javascript
+      const pessoa = {
+        nome: 'João',
+        saudacao() {
+          console.log(`Olá, meu nome é ${this.nome}`);
+        }
+      };
+      pessoa.saudacao(); // Saída: Olá, meu nome é João 
+      ```
+  - Em construtores
+  
+    - Quando `this` é usado dentro de um método de um objeto, ele referencia o próprio objeto:
+  
+    - Exemplo de uso: 
+      ```javascript
+      function Carro(marca) {
+        this.marca = marca;
+      }
+
+      const meuCarro = new Carro('Toyota');
+      console.log(meuCarro.marca); // Saída: Toyota
+      ```
+  - Em Funções Arrow
+  
+    - As funções arrow não possuem seu próprio `this`. Elas herdam o valor de `this` do escopo onde foram definidas:
+  
+    - Exemplo de uso: 
+      ```javascript
+        function Pessoa() {
+          this.idade = 0;
+
+          setInterval(() => {
+            this.idade++;
+            console.log(this.idade);
+          }, 1000);
+        }
+
+        const p = new Pessoa();
+      ```
+
 # 3. Estruturas Condicionais 
 
 - As estruturas condicionais `if`, `else if` e `else` são usadas para executar diferentes blocos de código com base em condições específicas.
@@ -1076,3 +1138,109 @@
     numeros.sort();
     console.log(numeros); // [1, 3, 5, 8]
     ```
+# POO - Progração Orientada Objeto
+
+## Objeto
+
+-  São estruturas fundamentais que permitem armazenar e manipular dados de forma organizada.  
+-  São coleções de pares chave-valor, onde cada valor pode ser um dado primitivo, outro objeto ou até mesmo uma função.
+  
+- **Objeto Literal**
+  - É a maneira mais simples e direta de criar objetos em JavaScript, usando a notação `{}`.
+  - **Exemplo de Uso:**
+    ```javascript
+      const carro = {
+        marca: "Toyota",
+        modelo: "Corolla",
+        ano: 2020,
+        ligar: function() {
+          console.log("O carro está ligado!");
+        }
+      };
+
+      // Acessando propriedades e métodos
+      console.log(carro.marca); // Saída: Toyota
+      carro.ligar(); // Saída: O carro está ligado!
+    ```
+  - **Vantagens:**
+
+    - Simples e direto para objetos pequenos.
+
+    - Ideal para objetos estáticos.
+
+  - **Desvantagens:**
+
+    - Não é reutilizável para criar múltiplas instâncias similares.
+
+    - Falta de encapsulamento e herança.
+
+- **Objeto com Função Construtora**
+  - Antes da introdução das `Classes` em `ES6`, utilizavam-se Funções Construtoras para criar objetos reutilizáveis.
+  - **Exemplo de Uso:**
+    ```javascript
+    function Carro(marca, modelo, ano) {
+      this.marca = marca;
+      this.modelo = modelo;
+      this.ano = ano;
+    }
+
+    // Adicionando um método ao protótipo
+    Carro.prototype.ligar = function() {
+      console.log(`O ${this.marca} ${this.modelo} está ligado!`);
+    };
+
+    // Criando instâncias
+    const carro1 = new Carro("Toyota", "Corolla", 2020);
+    const carro2 = new Carro("Honda", "Civic", 2021);
+
+    // Usando os objetos
+    console.log(carro1.modelo); // Saída: Corolla
+    carro2.ligar(); // Saída: O Honda Civic está ligado!
+    ```
+  - **Vantagens:**
+
+    - Permite criação de múltiplas instâncias.
+
+    - Uso de protótipos para compartilhamento de métodos.
+
+  - **Desvantagens:**
+
+    - Sintaxe mais verbosa.
+
+    - Abordagem mais antiga e menos intuitiva que as Classes modernas.
+  
+- **Objeto com Classes (ES6)**
+  - Com o ECMAScript 6 (ES6), o JavaScript introduziu a palavra-chave `class`, tornando a Programação Orientada a Objetos (POO) mais intuitiva e organizada
+  
+  - **Exemplo de Uso:**
+    ```javascript
+    class Carro {
+      constructor(marca, modelo, ano) {
+        this.marca = marca;
+        this.modelo = modelo;
+        this.ano = ano;
+      }
+      
+      // Método da classe
+      ligar() {
+        console.log(`O ${this.marca} ${this.modelo} está ligado!`);
+      }
+    }
+
+    // Criando instâncias
+    const carro1 = new Carro("Toyota", "Corolla", 2020);
+    const carro2 = new Carro("Honda", "Civic", 2021);
+
+    // Utilizando os objetos
+    console.log(carro1.modelo); // Saída: Corolla
+    carro2.ligar(); // Saída: O Honda Civic está ligado!
+    ```
+  - **Vantagens:**
+
+    - Abordagem moderna e mais próxima de outras linguagens orientadas a objetos.
+
+    - Suporte a herança e encapsulamento.
+
+  - **Desvantagens:**
+
+    - Para objetos muito simples, pode ser exagerado.
