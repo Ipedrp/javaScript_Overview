@@ -53,7 +53,11 @@
 - [8. POO - Programação Orientada Objeto](#8-poo---programação-orientada-objeto)
   - [8.1. Objeto](#81-objeto)
   - [8.2. Herança](#82-herança)
-  - [JSON](#json)
+  - [8.3. JSON](#83-json)
+  - [8.4. Propriedade e Método `Static`](#84-propriedade-e-método-static)
+  - [8.5. `Prototype`](#85-prototype)
+  - [8.6. Polimorfismo](#86-polimorfismo)
+  - [8.7. Abstração](#87-abstração)
 
 # 1. Declaração de Variáveis em JavaScript
 
@@ -1296,7 +1300,7 @@
 
   - **Flexibilidade:** A herança cria uma relação rígida entre as classes, o que pode dificultar mudanças futuras.
   
-## JSON
+## 8.3. JSON
 
 - *JSON** (*JavaScript Object Notation*) é um formato leve para troca de dados, fácil de ler e escrever tanto para humanos quanto para máquinas. 
 - É amplamente utilizado para o envio e recebimento de informações em aplicações web, especialmente em APIs.
@@ -1388,6 +1392,362 @@
 | **`JSON.stringify()`** | Converte objeto para string JSON                       | `JSON.stringify({nome: "Produto"})`         |
 | **`JSON.parse()`**     | Converte string JSON para objeto JavaScript            | `JSON.parse('{"nome": "Produto"}')`         |
 
+## 8.4. Propriedade e Método `Static`
+
+- É utilizada em programação orientada a objetos (POO) para definir propriedades e métodos que pertencem à própria classe e não às instâncias da classe. 
+- Isso significa que você pode acessar esses membros estáticos diretamente pela classe, sem precisar criar um objeto a partir dela.
+
+- **Propriedades Estáticas**
+
+  - Útil para armazenar informações ou configurações que são comuns a todas as instâncias de uma classe.
+
+  - **Exemplo de Uso:**
+    ```javascript
+    class Configuracao {
+      static appName = 'Minha Aplicação';
+      static versao = '1.0.0';
+    }
+
+    console.log(Configuracao.appName); // Saída: Minha Aplicação
+    console.log(Configuracao.versao);  // Saída: 1.0.0
+    ```
+- **Métodos Estáticos**
+
+  - Pertencem à classe e podem ser usados sem criar uma instância da classe. 
+  - São ideais para funções utilitárias ou operações que não dependem do estado do objeto
+
+  - **Exemplo de Uso:**
+    ```javascript
+    class Matematica {
+      static somar(a, b) {
+        return a + b;
+      }
+    }
+
+    console.log(Matematica.somar(5, 3)); // Saída: 8
+    ```
+- **Características das Propriedades e Métodos Estáticos**
+
+  - **Acesso Direto pela Classe:** Não é necessário (nem possível) acessar métodos estáticos via instâncias.
+  - **Uso Comum:** São frequentemente usados para criar bibliotecas de funções utilitárias, configurações globais e constantes.
+
+  - **Exemplo de Uso:**
+    ```javascript
+    const math = new Matematica();
+    console.log(math.somar(2, 3)); // Erro: math.somar não é uma função
+    ```
+- **Cenário de Uso**
+
+  - Imagine uma aplicação onde você precisa ter uma contagem global de todas as instâncias criadas de uma classe específica.
+  - A propriedade estática ajuda a manter esse controle.
+
+  - **Exemplo de Uso:**
+    ```javascript
+    class Usuario {
+      static contador = 0;
+
+      constructor(nome) {
+        this.nome = nome;
+        Usuario.contador++;
+      }
+    }
+
+    const user1 = new Usuario('João');
+    const user2 = new Usuario('Maria');
+
+    console.log(Usuario.contador); // Saída: 2
+    ```
+## 8.5. `Prototype`
+
+- É um dos conceitos fundamentais na programação orientada a objetos (POO) em JavaScript. 
+- Permite a criação de propriedades e métodos que podem ser compartilhados entre todas as instâncias de um objeto
+- Promove a reutilização de código e economizando memória.
+
+- **O que é o Prototype?**
+
+  - Cada função construtora possui uma propriedade chamada prototype, que é um objeto usado como protótipo para todas as instâncias criadas por essa função.
+  
+  - **Exemplo de Uso:**
+    ```javascript
+    function Pessoa(nome, idade) {
+      this.nome = nome;
+      this.idade = idade;
+    }
+
+    Pessoa.prototype.falar = function() {
+      console.log(`Olá, meu nome é ${this.nome} e tenho ${this.idade} anos.`);
+    };
+
+    const pessoa1 = new Pessoa('João', 25);
+    pessoa1.falar();
+    // Saída: Olá, meu nome é João e tenho 25 anos.
+    ```
+- **Prototype com a Sintaxe de Classes**
+
+  - Quando você utiliza a sintaxe de class em JavaScript, os métodos definidos dentro da classe são automaticamente adicionados ao prototype. Veja o exemplo:
+  
+  - **Exemplo de Uso:**
+    ```javascript
+    class Pessoa {
+      constructor(nome, idade) {
+        this.nome = nome;
+        this.idade = idade;
+      }
+
+      falar() {
+        console.log(`Olá, meu nome é ${this.nome} e tenho ${this.idade} anos.`);
+      }
+    }
+
+    const pessoa2 = new Pessoa('Maria', 30);
+    pessoa2.falar();
+    // Saída: Olá, meu nome é Maria e tenho 30 anos.
+
+    console.log(Pessoa.prototype.falar === pessoa2.falar); 
+    // Saída: true
+    ```
+- **Como o Prototype Funciona?**
+
+  - Quando você tenta acessar uma propriedade ou método em um objeto, o JavaScript primeiro procura essa propriedade no próprio objeto.
+  - Se não encontrar, ele busca no protótipo do objeto, e assim por diante, subindo na cadeia de protótipos até chegar no topo, que é Object.prototype. 
+  - Se ainda assim não encontrar, retorna undefined.
+
+- **Vantagens do Uso de Prototype**
+
+  - **Eficiência de Memória:** Métodos definidos no prototype são compartilhados entre todas as instâncias, em vez de serem duplicados para cada objeto.
+
+  - **Herança Prototípica:** Permite criar cadeias de herança entre objetos.
+
+  - **Exemplo de Uso:**
+    ```javascript
+    function Animal(nome) {
+      this.nome = nome;
+    }
+
+    Animal.prototype.falar = function() {
+      console.log(`${this.nome} faz um som.`);
+    };
+
+    function Cachorro(nome) {
+      Animal.call(this, nome); // Herda propriedades
+    }
+
+    Cachorro.prototype = Object.create(Animal.prototype);
+    Cachorro.prototype.constructor = Cachorro;
+
+    Cachorro.prototype.falar = function() {
+      console.log(`${this.nome} late.`);
+    };
+
+    const dog = new Cachorro('Rex');
+    dog.falar();
+    // Saída: Rex late.
+    ```
+- **Diferença entre Prototype e Método Static**
+  
+  | Característica | Prototype | Static |
+  |----------------|-----------|--------|
+  | **Pertence a** | Instâncias do objeto | Própria classe |
+  | **Acesso** | Via instâncias | Diretamente pela classe |
+  | **Uso** | Métodos comuns a todas instâncias | Funções utilitárias e constantes |
+
+## 8.6. Polimorfismo 
+
+- Um dos princípios fundamentais da programação orientada a objetos (POO). 
+- Permite que objetos de diferentes classes possam ser tratados de forma similar, através de uma interface comum, mas com comportamentos diferentes. 
+- É implementado por meio de herança e sobrescrita de métodos.
+
+- **Tipos de Polimorfismo**
+
+  - Existem dois tipos principais de polimorfismo:
+
+    - **Polimorfismo de Sobrecarga**: Ocorre quando um método tem o mesmo nome, mas comportamentos diferentes dependendo dos parâmetros passados.
+    
+    - **Polimorfismo de Sobrescrita**: Ocorre quando uma classe filha reescreve um método herdado de uma classe pai.
+
+  - **Polimorfismo de Sobrescrita**
+
+    - Ocorre quando uma classe filha sobrescreve um método da classe pai.
+    - **Exemplo de Uso:**
+  
+      ```javascript
+      // Classe Pai
+      class Animal {
+        falar() {
+          console.log("O animal faz um som!");
+        }
+      }
+
+      // Classe Filha
+      class Cachorro extends Animal {
+        falar() {
+          console.log("O cachorro late!");
+        }
+      }
+
+      // Classe Filha
+      class Gato extends Animal {
+        falar() {
+          console.log("O gato mia!");
+        }
+      }
+
+      // Criando instâncias
+      const animal = new Animal();
+      const cachorro = new Cachorro();
+      const gato = new Gato();
+
+      // Polimorfismo: Diferentes comportamentos para o mesmo método
+      animal.falar();   // O animal faz um som!
+      cachorro.falar(); // O cachorro late!
+      gato.falar();     // O gato mia!
+      ```
+  - **Polimorfismo com Argumentos**
+
+    - Embora o JavaScript não suporte sobrecarga de métodos da mesma forma que outras linguagens (como Java), podemos simular o polimorfismo de sobrecarga manipulando os parâmetros passados para os métodos.
+  
+    - **Exemplo de Uso:**
+  
+      ```javascript
+      class Operacao {
+        calcular(a, b) {
+          console.log("Realizando uma operação...");
+        }
+      }
+
+      class Soma extends Operacao {
+        calcular(a, b) {
+          console.log(`Resultado da soma: ${a + b}`);
+        }
+      }
+
+      class Multiplicacao extends Operacao {
+        calcular(a, b) {
+          console.log(`Resultado da multiplicação: ${a * b}`);
+        }
+      }
+
+      // Criando instâncias
+      const soma = new Soma();
+      const multiplicacao = new Multiplicacao();
+
+      // Polimorfismo com parâmetros diferentes
+      soma.calcular(5, 3);          // Resultado da soma: 8
+      multiplicacao.calcular(5, 3); // Resultado da multiplicação: 15
+
+      /*
+      Explicação:
+
+      A classe Soma e a classe Multiplicacao sobrescrevem o método calcular da classe Operacao, mas realizam operações diferentes (soma e multiplicação).
+      O método calcular é polimórfico, pois seu comportamento depende da classe que o invoca.
+      */
+
+      ```
+- **Vantagens do Polimorfismo**
+  - **Flexibilidade:** Permite que o mesmo código trate diferentes tipos de objetos de maneira genérica.
+  - **Extensibilidade:** Facilita a adição de novos tipos de objetos sem precisar modificar o código existente.
+  - **Manutenção:** Reduz a duplicação de código, centralizando a lógica comum nas classes pai e permitindo que as classes filhas implementem comportamentos específicos.
 
 
+## 8.7. Abstração 
 
+- É um dos conceitos fundamentais da programação orientada a objetos (POO). 
+- Permite esconder a complexidade do sistema e exibir apenas a funcionalidade essencial para o usuário ou para outras partes do sistema.
+- Em JavaScript, a abstração pode ser alcançada usando classes, métodos e encapsulamento.
+
+- **O que é Abstração?**
+
+- É o processo de esconder os detalhes de implementação de um objeto e expor apenas as funcionalidades que são necessárias para o usuário ou outros componentes do sistema.
+- Em vez de o usuário se preocupar com como algo é feito, ele apenas usa a interface fornecida.
+
+- **Benefícios da Abstração:**
+
+  - **Simplificação**: Esconde complexidade desnecessária.
+  - **Segurança**: Protege dados internos e impede alterações não desejadas.
+  - **Modularização**: Facilita a manutenção e evolução do sistema.
+
+- **Abstração com Classes e Métodos**
+
+  - Em JavaScript, podemos criar uma classe abstrata (com base em um conceito de classes base) que define um conjunto de métodos que as subclasses devem implementar.
+  
+  - **Exemplo de Uso**
+    ```javascript
+    // Classe Abstrata
+    class Animal {
+      constructor(nome) {
+        if (this.constructor === Animal) {
+          throw new Error("Não se pode instanciar a classe abstrata!");
+        }
+        this.nome = nome;
+      }
+
+      // Método abstrato (deve ser implementado pelas subclasses)
+      falar() {
+        throw new Error("Método 'falar' deve ser implementado!");
+      }
+    }
+
+    // Subclasse que implementa a classe abstrata
+    class Cachorro extends Animal {
+      falar() {
+        console.log(`${this.nome} está latindo!`);
+      }
+    }
+
+    // Subclasse que implementa a classe abstrata
+    class Gato extends Animal {
+      falar() {
+        console.log(`${this.nome} está miando!`);
+      }
+    }
+
+    // Tentando instanciar a classe abstrata (vai gerar erro)
+    try {
+      const animal = new Animal('Generic');
+    } catch (e) {
+      console.log(e.message); // Não se pode instanciar a classe abstrata!
+    }
+
+    // Instanciando objetos das subclasses
+    const cachorro = new Cachorro('Rex');
+    const gato = new Gato('Mimi');
+
+    cachorro.falar(); // Rex está latindo!
+    gato.falar();     // Mimi está miando!
+    ```
+- **Encapsulamento e Abstração**
+  - Um dos mecanismos que ajuda na abstração, permitindo que as variáveis internas de uma classe sejam protegidas de alterações externas.
+
+  - **Exemplo de Uso**
+      ```javascript
+      class ContaBancaria {
+        constructor(titular, saldo) {
+          this.titular = titular;
+          this._saldo = saldo; // Propriedade "protegida" com um underscore (_)
+        }
+
+        // Método para sacar dinheiro
+        sacar(valor) {
+          if (valor > this._saldo) {
+            console.log("Saldo insuficiente!");
+          } else {
+            this._saldo -= valor;
+            console.log(`Saque de R$${valor} realizado! Saldo atual: R$${this._saldo}`);
+          }
+        }
+
+        // Método para consultar o saldo
+        consultarSaldo() {
+          console.log(`Saldo de ${this.titular}: R$${this._saldo}`);
+        }
+      }
+
+      // Instanciando uma conta
+      const contaJoao = new ContaBancaria('João', 1000);
+
+      // Usando os métodos para interagir com a conta
+      contaJoao.consultarSaldo();  // Saldo de João: R$1000
+      contaJoao.sacar(200);         // Saque de R$200 realizado! Saldo atual: R$800
+      contaJoao.sacar(1000);        // Saldo insuficiente!
+
+      ```
