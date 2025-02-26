@@ -58,6 +58,11 @@
   - [8.5. `Prototype`](#85-prototype)
   - [8.6. Polimorfismo](#86-polimorfismo)
   - [8.7. Abstração](#87-abstração)
+- [9. Assíncrona](#9-assíncrona)
+  - [9.1. Assíncrona x Síncrono](#91-assíncrona-x-síncrono)
+  - [9.2. Callbacks](#92-callbacks)
+  - [9.3. Promises](#93-promises)
+  - [Async/Await](#asyncawait)
 
 # 1. Declaração de Variáveis em JavaScript
 
@@ -1144,6 +1149,8 @@
     numeros.sort();
     console.log(numeros); // [1, 3, 5, 8]
     ```
+
+
 # 8. POO - Programação Orientada Objeto
 
 ## 8.1. Objeto
@@ -1751,3 +1758,396 @@
       contaJoao.sacar(1000);        // Saldo insuficiente!
 
       ```
+
+# 9. Assíncrona
+
+## 9.1. Assíncrona x Síncrono
+- **Síncrono**
+  - O código é executado de forma sequencial, ou seja, uma operação só começa após a conclusão da anterior. 
+  - Isso pode ser simples de entender, mas em alguns casos, pode ser ineficiente, especialmente quando o código depende de operações mais lentas, como leitura de arquivos ou requisições de rede.
+
+  - **Exemplo de Uso:**
+    ```javascript
+    console.log('Início');
+
+    function tarefaDemorada() {
+      let total = 0;
+      for (let i = 0; i < 1000000000; i++) {
+        total += i;
+      }
+      return total;
+    }
+
+    const resultado = tarefaDemorada();  // Isso vai bloquear o restante do código até a conclusão
+    console.log('Resultado:', resultado);
+
+    console.log('Fim');
+
+    ```
+
+- **Assíncrono**
+  - A execução do código pode seguir enquanto espera por uma operação mais lenta.
+
+  - Útil para evitar que o programa “congele” durante tarefas como chamadas de rede ou leituras de arquivos.
+
+  - Em JavaScript, a assíncrona é geralmente feita com:
+    - Callbacks
+    - Promises
+    - Async/await
+
+- **Vantagens e Desvantagens**
+  - **Síncrono**
+    - **Vantagens:**
+      - Fácil de entender e seguir.
+      - Funciona bem quando as operações não bloqueiam a execução.
+    - **Desvantagens:**
+      - Pode causar bloqueio na execução se a operação for lenta, o que afeta a performance, especialmente em tarefas que envolvem I/O (entrada e saída), como requisições de rede.
+  - **Assíncrono**
+    - **Vantagens:**
+      - Melhora a performance, permitindo que o código continue a execução sem esperar por operações lentas.
+      - Ideal para chamadas de rede, leitura de arquivos, etc.
+    - **Desvantagens:**
+      - A lógica é mais complexa e pode se tornar difícil de entender sem um bom gerenciamento de callbacks, Promises ou async/await.
+
+- **Quando Usar**
+
+  - **Síncrono:** Use quando as operações são rápidas e você não precisa aguardar por processos externos como:
+    - interações com a rede 
+    - sistemas de arquivos
+
+  - **Assíncrono:** Use quando houver operações lentas ou que dependem de respostas externas, como: 
+    - chamadas de API
+    - processamento de arquivos, etc.
+
+
+## 9.2. Callbacks 
+
+- São funções passadas como argumento para outras funções e são executadas depois que uma operação assíncrona é concluída. 
+- Muito útil quando você precisa realizar tarefas que podem levar tempo, como requisições de rede, leitura de arquivos ou interações com bancos de dados, sem bloquear a execução do código.
+
+- **O que é um Callback?**
+  - Basicamente uma função que é "chamada de volta" após o término de um processo. 
+  - Permite que você controle a execução de outras operações quando uma tarefa assíncrona for concluída.
+
+  - **Sintaxe de um Callback**
+
+    ```javascript
+    function saudacao(nome, callback) {
+      console.log('Olá, ' + nome);
+      callback();
+    }
+
+    function despedida() {
+      console.log('Até logo!');
+    }
+
+    saudacao('João', despedida);
+    ```
+
+    - A função `saudacao` recebe o nome e uma função de callback (`despedida`). 
+    - Após imprimir a saudação, a função `despedida` é chamada.
+
+- **Exemplos de Uso de Callbacks**
+
+  - **Operações Assíncronas com Callbacks**
+
+    - Um dos principais usos de callbacks é em operações assíncronas. Por exemplo, com `setTimeout`, que simula um atraso:
+  
+    - **Exemplo de Uso:**
+
+      ```javascript
+      console.log('Início');
+
+      setTimeout(() => {
+        console.log('Tarefa concluída!');
+      }, 2000);
+
+      console.log('Fim');
+      ```
+
+      - O código não espera o `setTimeout` para continuar a execução. 
+      - Ele chama o callback após 2 segundos, enquanto o restante do código continua sendo executado imediatamente.
+
+  - **Manipulação de Arrays com Callbacks**
+
+    - Pode passar funções de callback para métodos de array como `.map()`, `.filter()` e `.forEach()`. 
+  
+    - Esses métodos executam a função de callback em cada item do array.
+  
+    - **Exemplo de Uso:**
+        ```javascript
+        const numeros = [1, 2, 3, 4, 5];
+
+        const quadrados = numeros.map((num) => num * num);
+
+        console.log(quadrados); // [1, 4, 9, 16, 25]
+        ```
+
+  - **Lidando com Erros Usando Callbacks**
+
+    - É comum ver callbacks que recebem dois parâmetros: um para o erro (se houver) e outro para o resultado. 
+    - Essa técnica é utilizada para tratar erros em operações assíncronas.
+    - **Exemplo de Uso:**
+
+      ```javascript
+      function divisao(a, b, callback) {
+        if (b === 0) {
+          callback('Erro: Divisão por zero!', null);
+        } else {
+          callback(null, a / b);
+        }
+      }
+
+      divisao(10, 2, (erro, resultado) => {
+        if (erro) {
+          console.log(erro);
+        } else {
+          console.log('Resultado:', resultado);
+        }
+      });
+
+      divisao(10, 0, (erro, resultado) => {
+        if (erro) {
+          console.log(erro);
+        } else {
+          console.log('Resultado:', resultado);
+        }
+      });
+      ```
+
+      - Aqui, se a divisão for válida, o callback é chamado com o resultado. 
+      - Caso contrário, é chamado com uma mensagem de erro.
+
+- **Vantagens dos Callbacks**
+
+  - **Controle de Fluxo**: Permitem que você controle quando uma função deve ser executada, especialmente em funções assíncronas.
+  - **Não Bloqueio**: O código não fica bloqueado aguardando uma tarefa. Isso permite que outras operações continuem enquanto esperam pela conclusão de uma tarefa assíncrona.
+
+- **Desvantagens dos Callbacks**
+
+  - **Callback Hell (Inferno dos Callbacks)**: Quando você tem várias operações assíncronas encadeadas, o código pode se tornar difícil de ler e manter. Isso é conhecido como "callback hell", pois a estrutura do código começa a se assemelhar a uma pirâmide invertida.
+
+    - **Exemplo de Callback Hell:**
+
+      ```javascript
+      funcao1(param, function(result1) {
+        funcao2(result1, function(result2) {
+          funcao3(result2, function(result3) {
+            // E assim por diante
+          });
+        });
+      });
+      ```
+
+  - **Difícil de Gerenciar Erros**: Se você não tiver um bom controle, os erros podem se propagar de forma confusa, especialmente em um fluxo assíncrono complexo.
+
+## 9.3. Promises 
+
+- É um objeto que representa a eventual conclusão ou falha de uma operação assíncrona. 
+- Pode estar em um dos três estados:
+  - **Pending** (Pendente):  A Promise ainda não foi resolvida.
+  - **Resolved** (Resolvida):  A Promise foi completada com sucesso.
+  - **Rejected** (Rejeitada): A Promise falhou.
+- Muito utilizada em JavaScript para lidar com operações assíncronas, como chamadas de API, leitura de arquivos, entre outros.
+
+- **Sintaxe da Promise**
+
+  - Envolve a criação de um novo objeto `Promise`, passando uma função com os parâmetros `resolve` e `reject`.  
+
+    ```javascript
+    const minhaPromise = new Promise((resolve, reject) => {
+        const sucesso = true;
+
+        if (sucesso) {
+            resolve("Deu certo!"); // Chama o .then()
+        } else {
+            reject("Deu errado!"); // Chama o .catch()
+        }
+    });
+    ```
+- **Métodos Principais**
+
+  - **`.then()`**
+
+    - Utilizado para lidar com o sucesso da **Promise**.  
+
+      ```javascript
+      minhaPromise
+          .then((resultado) => {
+              console.log(resultado); // Saída: "Deu certo!"
+          });
+      ```
+
+  - **`.catch()`**
+
+    - Captura erros ou rejeições da **Promise**.  
+
+      ```javascript
+      minhaPromise
+          .catch((erro) => {
+              console.error(erro); // Saída: "Deu errado!"
+          });
+      ```
+
+  - **`.finally()`**
+
+    - Executado independentemente do sucesso ou falha da **Promise**.  
+
+      ```javascript
+      minhaPromise
+          .finally(() => {
+              console.log("Finalizado!"); 
+          });
+      ```
+-  **Utilizando Promises com `fetch`**
+
+   - O `fetch` é uma API nativa do navegador para realizar requisições HTTP, retornando uma **Promise**.  
+   - **Exemplo de Uso:**
+
+      ```javascript
+      fetch("https://jsonplaceholder.typicode.com/posts")
+          .then((response) => {
+              if (!response.ok) {
+                  throw new Error("Erro na requisição");
+              }
+              return response.json();
+          })
+          .then((data) => {
+              console.log(data);
+          })
+          .catch((error) => {
+              console.error("Erro:", error);
+          })
+          .finally(() => {
+              console.log("Requisição finalizada");
+          });
+      ```
+
+     - **Com `Promise.all()` e `fetch`**
+       - **Exemplo de Uso** 
+          ```javascript
+          const urls = [
+              "https://jsonplaceholder.typicode.com/posts",
+              "https://jsonplaceholder.typicode.com/comments"
+          ];
+
+          const requests = urls.map((url) => fetch(url).then((res) => res.json()));
+
+          Promise.all(requests)
+              .then((results) => {
+                  console.log("Posts:", results[0]);
+                  console.log("Comments:", results[1]);
+              })
+              .catch((error) => {
+                  console.error("Erro em uma das requisições:", error);
+              });
+          ```
+
+- **Utilizando Promises com `axios`**
+    - O `axios` é uma biblioteca externa para realizar requisições HTTP, retornando também uma **Promise**.  
+   - **Exemplo de Uso**
+
+
+        ```bash
+        npm install axios
+        ```
+
+        ```javascript
+        import axios from "axios";
+
+        axios.get("https://jsonplaceholder.typicode.com/posts")
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+            })
+            .finally(() => {
+                console.log("Requisição com Axios finalizada");
+            });
+        ```
+
+## Async/Await 
+
+- É uma sintaxe simplificada para lidar com operações assíncronas em JavaScript. 
+- É construído em cima das Promises, oferecendo uma maneira mais clara e legível para escrever código assíncrono.
+
+- **Vantagens do Async/Await**
+
+  - Código mais legível e estruturado
+
+  - Evita o "callback hell"
+
+  - Tratamento de erros mais fácil com try...catch
+
+- **Sintaxe**
+
+  - `async:` Define uma função assíncrona que sempre retorna uma Promise.
+
+  - `await:` Pausa a execução até que a Promise seja resolvida.
+
+  - `try...catch...finally:` Facilita o tratamento de erros.
+
+    ```javascript
+    // Função assíncrona usando async/await
+    async function exemploAsync() {
+        try {
+            const resposta = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+            const dados = await resposta.json();
+            console.log(dados);
+        } catch (erro) {
+            console.error('Erro na requisição:', erro);
+        } finally {
+            console.log('Requisição finalizada');
+        }
+    }
+
+    exemploAsync();
+    ```
+
+-  **Usando Async/Await com `Fetch`**
+   - **Exemplo de Uso:**
+
+     ```javascript
+     async function fetchData() {
+         try {
+             const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+             const data = await response.json();
+             console.log('Dados com Fetch:', data);
+         } catch (error) {
+             console.error('Erro ao buscar dados:', error);
+         }
+     }
+
+     fetchData();
+     ```
+-  **Usando Async/Await com `Axios`**
+   - **Exemplo de Uso:**
+
+      ```javascript
+      const axios = require('axios');
+
+      async function fetchDataWithAxios() {
+          try {
+              const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1');
+              console.log('Dados com Axios:', response.data);
+          } catch (error) {
+              console.error('Erro ao buscar dados com Axios:', error);
+          }
+      }
+
+      fetchDataWithAxios();
+      ```
+
+-  **Diferença entre Async/Await, Promises e Callbacks**
+
+  | Característica          | Callbacks                        | Promises                    | Async/Await                |
+  |------------------------|--------------------------------|----------------------------|---------------------------|
+  | Legibilidade           | Baixa (callback hell)           | Média (encadeamento .then) | Alta (código síncrono)    |
+  | Tratamento de Erros    | Manual (callback de erro)       | `.catch()`                 | `try...catch`             |
+  | Controle de Fluxo      | Complexo                        | Médio                      | Simples                   |
+  | Execução Assíncrona    | Sim                             | Sim                        | Sim                       |
+
+  - **Callbacks:** Podem levar ao "callback hell" com muitas aninhadas.
+  - **Promises:** Melhoram a legibilidade, mas encadeamentos longos ainda podem ser confusos.
+  - **Async/Await:** Oferece um estilo de escrita quase síncrono, facilitando o entendimento do fluxo do código.
