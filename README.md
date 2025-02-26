@@ -66,6 +66,12 @@
 - [10. Módulos](#10-módulos)
   - [10.1. Export](#101-export)
   - [10.2. Import](#102-import)
+- [11. Desestruturação](#11-desestruturação)
+  - [11.1. Desestruturação de Objetos](#111-desestruturação-de-objetos)
+  - [11.2. Desestruturação em Funções](#112-desestruturação-em-funções)
+  - [11.3. Desestruturação de Arrays](#113-desestruturação-de-arrays)
+  - [11.4. Desestruturação em Objetos e Arrays Aninhados](#114-desestruturação-em-objetos-e-arrays-aninhados)
+  - [11.5. Desestruturação com Rest](#115-desestruturação-com-rest)
 # 1. Declaração de Variáveis em JavaScript
 
 - Em JavaScript, existem três formas principais de declarar variáveis:
@@ -2230,5 +2236,125 @@
     ```javascript
     // arquivo: pessoa.js
     export const pessoa = { nome: 'João', idade: 30 };
+
+    ```
+
+# 11. Desestruturação 
+
+- É uma técnica que permite extrair múltiplos valores de arrays ou objetos e armazená-los em variáveis de forma concisa. 
+- Ajuda a tornar o código mais legível e compacto.
+
+## 11.1. Desestruturação de Objetos
+
+- Permite extrair valores das propriedades de um objeto e armazená-los em variáveis com o mesmo nome das propriedades.
+
+- **Sintaxe Básica**
+
+  ```javascript
+  const pessoa = {
+    nome: 'João',
+    idade: 30,
+    email: 'joao@example.com'
+  };
+
+  const { nome, idade, email } = pessoa;
+  console.log(nome);  // João
+  console.log(idade); // 30
+  console.log(email); // joao@example.com
+  ```
+## 11.2. Desestruturação em Funções
+
+- Você pode desestruturar objetos diretamente nos parâmetros de uma função.
+
+- **Sintaxe Básica**
+
+  ```javascript
+  function mostrarPessoa({ nome, idade }) {
+    console.log(`Nome: ${nome}, Idade: ${idade}`);
+  }
+
+  const pessoa = { nome: 'Lucas', idade: 28 };
+  mostrarPessoa(pessoa); // Nome: Lucas, Idade: 28
+
+  ```
+## 11.3. Desestruturação de Arrays
+
+- A desestruturação de arrays permite extrair valores das posições do array e armazená-los em variáveis.
+
+- **Sintaxe Básica**
+
+  ```javascript
+  const numeros = [10, 20, 30];
+
+  const [a, b, c] = numeros;
+  console.log(a); // 10
+  console.log(b); // 20
+  console.log(c); // 30
+
+  ```
+## 11.4. Desestruturação em Objetos e Arrays Aninhados
+- A desestruturação também pode ser usada para acessar propriedades e elementos aninhados.
+
+- **Objetos Aninhados**
+  - **Sintaxe Básica**
+
+    ```javascript
+    const pessoa = {
+      nome: 'Ana',
+      endereco: {
+        rua: 'Rua 1',
+        cidade: 'São Paulo'
+      }
+    };
+
+    const { nome, endereco: { rua, cidade } } = pessoa;
+    console.log(nome);   // Ana
+    console.log(rua);    // Rua 1
+    console.log(cidade); // São Paulo
+
+    ```
+- **Arrays Aninhados**
+  - **Sintaxe Básica**
+
+    ```javascript
+    const numeros = [1, [2, 3], 4];
+
+    const [a, [b, c], d] = numeros;
+    console.log(a); // 1
+    console.log(b); // 2
+    console.log(c); // 3
+    console.log(d); // 4
+
+    ```
+
+## 11.5. Desestruturação com Rest
+
+- Você pode usar o operador `...` (rest) para capturar o restante dos elementos de um array ou propriedades de um objeto.
+
+- **Em Objetos**
+  - **Sintaxe Básica**
+
+    ```javascript
+    const pessoa = {
+      nome: 'Maria',
+      idade: 30,
+      cidade: 'Rio de Janeiro'
+    };
+
+    const { nome, ...resto } = pessoa;
+    console.log(nome);   // Maria
+    console.log(resto);  // { idade: 30, cidade: 'Rio de Janeiro' }
+
+    ```
+
+- **Em Arrays**
+  - **Sintaxe Básica**
+
+    ```javascript
+    const numeros = [10, 20, 30, 40];
+
+    const [primeiro, ...resto] = numeros;
+    console.log(primeiro); // 10
+    console.log(resto);    // [20, 30, 40]
 
     ```
