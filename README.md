@@ -62,8 +62,10 @@
   - [9.1. Assíncrona x Síncrono](#91-assíncrona-x-síncrono)
   - [9.2. Callbacks](#92-callbacks)
   - [9.3. Promises](#93-promises)
-  - [Async/Await](#asyncawait)
-
+  - [9.4. Async/Await](#94-asyncawait)
+- [10. Módulos](#10-módulos)
+  - [10.1. Export](#101-export)
+  - [10.2. Import](#102-import)
 # 1. Declaração de Variáveis em JavaScript
 
 - Em JavaScript, existem três formas principais de declarar variáveis:
@@ -1394,10 +1396,10 @@
 
 - **Comparando `JSON.stringify()` e `JSON.parse()`**
 
-| Método            | Função                                                | Exemplo                                     |
-|-------------------|-------------------------------------------------------|--------------------------------------------|
-| **`JSON.stringify()`** | Converte objeto para string JSON                       | `JSON.stringify({nome: "Produto"})`         |
-| **`JSON.parse()`**     | Converte string JSON para objeto JavaScript            | `JSON.parse('{"nome": "Produto"}')`         |
+| Método                 | Função                                      | Exemplo                             |
+| ---------------------- | ------------------------------------------- | ----------------------------------- |
+| **`JSON.stringify()`** | Converte objeto para string JSON            | `JSON.stringify({nome: "Produto"})` |
+| **`JSON.parse()`**     | Converte string JSON para objeto JavaScript | `JSON.parse('{"nome": "Produto"}')` |
 
 ## 8.4. Propriedade e Método `Static`
 
@@ -1552,11 +1554,11 @@
     ```
 - **Diferença entre Prototype e Método Static**
   
-  | Característica | Prototype | Static |
-  |----------------|-----------|--------|
-  | **Pertence a** | Instâncias do objeto | Própria classe |
-  | **Acesso** | Via instâncias | Diretamente pela classe |
-  | **Uso** | Métodos comuns a todas instâncias | Funções utilitárias e constantes |
+  | Característica | Prototype                         | Static                           |
+  | -------------- | --------------------------------- | -------------------------------- |
+  | **Pertence a** | Instâncias do objeto              | Própria classe                   |
+  | **Acesso**     | Via instâncias                    | Diretamente pela classe          |
+  | **Uso**        | Métodos comuns a todas instâncias | Funções utilitárias e constantes |
 
 ## 8.6. Polimorfismo 
 
@@ -2067,7 +2069,7 @@
             });
         ```
 
-## Async/Await 
+## 9.4. Async/Await 
 
 - É uma sintaxe simplificada para lidar com operações assíncronas em JavaScript. 
 - É construído em cima das Promises, oferecendo uma maneira mais clara e legível para escrever código assíncrono.
@@ -2141,13 +2143,92 @@
 
 -  **Diferença entre Async/Await, Promises e Callbacks**
 
-  | Característica          | Callbacks                        | Promises                    | Async/Await                |
-  |------------------------|--------------------------------|----------------------------|---------------------------|
-  | Legibilidade           | Baixa (callback hell)           | Média (encadeamento .then) | Alta (código síncrono)    |
-  | Tratamento de Erros    | Manual (callback de erro)       | `.catch()`                 | `try...catch`             |
-  | Controle de Fluxo      | Complexo                        | Médio                      | Simples                   |
-  | Execução Assíncrona    | Sim                             | Sim                        | Sim                       |
+  | Característica      | Callbacks                 | Promises                   | Async/Await            |
+  | ------------------- | ------------------------- | -------------------------- | ---------------------- |
+  | Legibilidade        | Baixa (callback hell)     | Média (encadeamento .then) | Alta (código síncrono) |
+  | Tratamento de Erros | Manual (callback de erro) | `.catch()`                 | `try...catch`          |
+  | Controle de Fluxo   | Complexo                  | Médio                      | Simples                |
+  | Execução Assíncrona | Sim                       | Sim                        | Sim                    |
 
   - **Callbacks:** Podem levar ao "callback hell" com muitas aninhadas.
   - **Promises:** Melhoram a legibilidade, mas encadeamentos longos ainda podem ser confusos.
   - **Async/Await:** Oferece um estilo de escrita quase síncrono, facilitando o entendimento do fluxo do código.
+
+
+# 10. Módulos
+
+- Oferece um sistema de módulos para dividir o código em arquivos separados
+- Ajuda na organização e na reutilização de código. 
+- Podem ser exportados e importados usando duas palavras-chave principais: `export` e `export default`.
+
+## 10.1. Export
+
+- É usada para exportar funcionalidades (como funções, objetos ou variáveis) de um módulo para que possam ser usadas em outros módulos.
+
+- **Exportando com `export`**
+  - Você pode exportar funcionalidades, como: 
+    - Funções
+    - Variáveis 
+    - Objetos
+
+ 
+    ```javascript
+    // arquivo: math.js
+    export const soma = (a, b) => a + b;
+    export const subtrai = (a, b) => a - b;
+    ```
+
+
+- **Exportando com `Export Default`**
+  - É usada para exportar uma única entidade como valor padrão de um módulo. 
+  - É especialmente útil quando o módulo tem uma única exportação principal.
+
+
+    ```javascript
+    // arquivo: minhaClasse.js
+    export default class MinhaClasse {
+      constructor(nome) {
+        this.nome = nome;
+      }
+      
+      saudacao() {
+        return `Olá, ${this.nome}!`;
+      }
+    }
+
+    ```
+
+## 10.2. Import
+- É usada para trazer as funcionalidades exportadas de um módulo para outro. - Existem diferentes formas de importar, dependendo de como o módulo foi exportado (com ou sem default)
+
+- **Importando com `export`**
+  - Quando usamos `export`, devemos importar com as chaves `{}`.
+
+    ```javascript
+    // arquivo: app.js
+    import { soma, subtrai } from './math.js';
+    ```
+  
+- **Importando com `export default`**
+  - Com `export default`, podemos importar sem chaves e até usar um nome diferente.
+
+    ```javascript
+    // arquivo: app.js
+    import MinhaClasse from './minhaClasse.js';
+    ```
+- **Importando tudo de uma vez**
+  - Usando `* as`, podemos importar todas as funcionalidades de um módulo sob um alias.
+
+    ```javascript
+    // arquivo: app.js
+    import * as math from './math.js';
+
+    ```
+- **Importando usando Aliases**
+  - Você pode renomear a importação para evitar conflitos de nomes.**
+
+    ```javascript
+    // arquivo: pessoa.js
+    export const pessoa = { nome: 'João', idade: 30 };
+
+    ```
